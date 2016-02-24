@@ -5,7 +5,7 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-import static com.selenium.helpers.HelperClasses.*;
+import static com.selenium.environment.HelperClasses.*;
 
 /**'
  * Created by Iain Mounsey-Smith on 24/11/2015.
