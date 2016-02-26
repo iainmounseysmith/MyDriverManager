@@ -34,7 +34,9 @@ public class MyDriverManager {
         System.out.println("The Set method has been passed parameters...");
         useThisDriver = driverChoice;//local browser
         remoteHostServerName = remoteHost;// set this to null if only running local
+
         remoteBrowserName=remoteBrowser;
+
         //used for passing through property from MVN commandline
         //e.g. mvn test -DMY_DRIVER=FIREFOX
         String browserNameAsString = useThisDriver.name();
@@ -42,6 +44,10 @@ public class MyDriverManager {
         System.setProperty(MY_DRIVER, browserNameAsString);
         System.setProperty(REMOTE_HOST_NAME, remoteHostServerName.name());
         System.setProperty(REMOTE_BROWSER_NAME, remoteBrowserName.name());
+
+        System.out.println("useThisDriver has been passed through from code as \t\t\t\t" + useThisDriver + "\t\t\tand set as system property MY_DRIVER");
+        System.out.println("remoteHostServerName has been passed through from code as \t\t" + remoteHostServerName+ "\t\t\t\tand set as system property REMOTE_HOST_NAME");
+        System.out.println("remoteBrowserName has been passed through from code as \t\t\t" + remoteBrowserName+ "\t\t\t\tand set as system property REMOTE_BROWSER_NAME");
 
         //e.g. mvn test -DMY_DRIVER=GRID -DGRID_BROWSER=GOOGLECHROME
         if (remoteHostServerName !=null) {//this handles instances where we pass null in to set() method for gridBrowser
@@ -60,6 +66,7 @@ public class MyDriverManager {
     //Method signature for using a local driver only
     public static void set(driverOrBrowserName driverChoice){
         useThisDriver = driverChoice;//local browser;// set this to null if only running local
+        System.out.println("useThisDriver has been passed through from code as \t\t\t\t" + useThisDriver + "\t\t\tand set as system property MY_DRIVER");
         String browserNameAsString = useThisDriver.name();
         System.setProperty(MY_DRIVER, browserNameAsString);
         if (aDriver != null) {//if a driver is already loaded then quit it
