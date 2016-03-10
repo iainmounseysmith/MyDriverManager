@@ -88,6 +88,7 @@ public class HelperClasses {
                 if (screenshotsDirectory.exists()){
                     /*nothing to see here ..move on*/
                 }else{
+                    System.out.println("Snapshot directory " + ScreenShotLocation + " does not exist so have created it");
                     screenshotsDirectory.mkdirs();//this creates the directory specified above if it does not already exist
                 };
                 Long uniqueSystemTimeInMillis = System.currentTimeMillis();//create unique part of filename
@@ -118,6 +119,7 @@ public class HelperClasses {
                     /*nothing to see here ..move on*/
                 }else{
                     screenshotsDirectory.mkdirs();//this creates the directory specified above if it does not already exist
+                    System.out.println("Snapshot directory " + ScreenShotLocation + " does not exist so have created it");
                 };
                 Long uniqueSystemTimeInMillis = System.currentTimeMillis();//create unique part of filename
                 File theScreenShot = new File((screenshotsDirectory.toString()) + "\\" + screenShotPrefix + uniqueSystemTimeInMillis.toString() + (".png"));
@@ -184,7 +186,8 @@ public class HelperClasses {
                 DeterminedLocationOfChromeDriverExecutable = myfile2.getAbsolutePath();
                 //System.out.println("abs h " + DeterminedLocationOfChromeDriverExecutable);
             }
-        else{fail("A chromedriver.exe cannot be found either at " + FullPathToExecutableInResources + " or in " +FullPathToExecutableInFileSystem );
+        else{fail("A chromedriver.exe cannot be found either at " + FullPathToExecutableInResources + " or in " +FullPathToExecutableInFileSystem + "/n. Download it from " +
+                    "https://sites.google.com/a/chromium.org/chromedriver/downloads" + "/n and place it in " +DeterminedLocationOfChromeDriverExecutable  );
 
             }
         }
@@ -206,7 +209,8 @@ public class HelperClasses {
         File myIEDriverServerExe = new File(FullPathToExecutableInResources);
         if (myIEDriverServerExe.exists() == true) {
                  }
-        else{fail("A IEDriverServer.exe cannot be found either at " + FullPathToExecutableInResources);
+        else{fail("A IEDriverServer.exe cannot be found at " + FullPathToExecutableInResources + "/n. Download it from " + "http://www.seleniumhq.org/download/ /n and place it in " +
+                FullPathToExecutableInResources+ "\\IE\\");
         }
         System.setProperty("webdriver.ie.driver", FullPathToExecutableInResources); //set location
         MyDriverManager.aDriver = new InternetExplorerDriver();
@@ -220,7 +224,7 @@ public class HelperClasses {
         File myPhantomJSExe = new File(FullPathToExecutableInResources);
         if (myPhantomJSExe.exists() == true) {
         }
-        else{fail("A PhantomJSExe.exe cannot be found either at " + FullPathToExecutableInResources);
+        else{fail("A PhantomJSExe.exe cannot be found.\n. Download it from \n http://phantomjs.org/download.html /n and place it in "+ FullPathToExecutableInResources+ "\\phantom\\");
         }
         System.setProperty("webdriver.ie.phantom", FullPathToExecutableInResources); //set location
         File phantomFile = new File(FullPathToExecutableInResources );
@@ -341,4 +345,5 @@ public class HelperClasses {
         }
                 return theServerURLReturned;
     }
+
 }
