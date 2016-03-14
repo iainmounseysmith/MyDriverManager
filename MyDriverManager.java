@@ -162,7 +162,7 @@ public class MyDriverManager {
         get();//we run the get method to set useThisDriver and instantiate aDriver based on (useThisDriver.name())
         aDriver.get(goToThisURL);
         try{
-            System.out.println("Attempting to maximise window using get method...");
+            System.out.println("Maximising window using get method...");
             aDriver.manage().window().maximize();
         }catch(UnsupportedCommandException e){
             System.out.println("Remote Driver does not support maximise");
@@ -183,6 +183,9 @@ public class MyDriverManager {
                 case "IE":
                     theBrowserYouAreRunningIs = driverOrBrowserName.IE.name();
                     break;
+                case "PHANTOM":
+                    theBrowserYouAreRunningIs = driverOrBrowserName.PHANTOM.name();
+                    break;
             }
         }else{//else if driver is other then remotedriver/grid THEN report browser launched
             //System.out.println("inside else bit");
@@ -195,6 +198,9 @@ public class MyDriverManager {
                     break;
                 case "IE":
                     theBrowserYouAreRunningIs = driverOrBrowserName.IE.name();
+                    break;
+                case "PHANTOM":
+                    theBrowserYouAreRunningIs = driverOrBrowserName.PHANTOM.name();
                     break;
             }
         }
