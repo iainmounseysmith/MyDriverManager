@@ -10,6 +10,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -19,6 +20,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static com.selenium.redirect_tests.testRedirectionViaFoundListofUserAgentStrings.*;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -227,13 +229,20 @@ public class HelperClasses {
         else{fail("A PhantomJSExe.exe cannot be found.\n. Download it from \n http://phantomjs.org/download.html /n and place it in "+ FullPathToExecutableInResources+ "\\phantom\\");
         }
         System.setProperty("webdriver.ie.phantom", FullPathToExecutableInResources); //set location
+       // String[] cli_args = new String[]{ "--proxy-type=none" };//added to fix 263 erros...didn't work
+        //String[] cli_args = new String[]{ " --ignore-ssl-errors=true"};//added to fix 263 erros...didn't work
         File phantomFile = new File(FullPathToExecutableInResources );
         DesiredCapabilities  capabilities = new DesiredCapabilities();
         capabilities.setJavascriptEnabled(true);
+        //capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, cli_args);//added to fix 263 erros...didn't work
         System.out.println(FullPathToExecutableInResources);
         capabilities.setCapability("phantomjs.binary.path", FullPathToExecutableInResources);
+        if (System.getProperty("phantomjs.page.settings.userAgent")!=""){
+            capabilities.setCapability("phantomjs.page.settings.userAgent", useThisUserAgent2);
+        }
         MyDriverManager.aDriver = new PhantomJSDriver(capabilities);
         return MyDriverManager.aDriver;
+        //create another method with alternate signature - accepts arguments specifying UA string....run customisePhantom()
     }
 
     @Test
