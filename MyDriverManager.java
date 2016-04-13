@@ -1,9 +1,12 @@
 package com.selenium.environment;
 
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static com.selenium.environment.HelperClasses.*;
 
@@ -206,4 +209,31 @@ public class MyDriverManager {
         }
         System.out.println("The browser that getCurrentBrowser() has detected is = " + theBrowserYouAreRunningIs);
         return theBrowserYouAreRunningIs;}
+
+    public static boolean waitForJStoLoad(WebDriverWait wait) {
+        //the following sourced from stackexchange
+        final JavascriptExecutor js = (JavascriptExecutor)aDriver;
+        // wait for jQuery to load
+        ExpectedCondition<Boolean> jQueryLoad = new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver aDriver) {
+                try {//jquery has finished when active=0
+                    return ((Long)js.executeScript("return jQuery.active") == 0);
+                }
+                catch (Exception e) {
+                    return true;
+                }
+            }
+        };
+        // wait for Javascript to load
+        ExpectedCondition<Boolean> jsLoad = new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return js.executeScript("return document.readyState").toString().equals("complete");
+                //complete=The document and all sub-resources have finished loading. The state indicates that the load event has been fired.
+            }
+        };
+
+        return wait.until(jQueryLoad) && wait.until(jsLoad);
+    }
 }
