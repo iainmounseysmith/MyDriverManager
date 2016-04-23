@@ -34,6 +34,7 @@ public class HelperClasses {
     private static Boolean isGridRunningDecision =null;
     public static String pathToResourcesTools="\\src\\test\\resources\\tools";
     public static String pathToSeleniumGridServerNodeBatchFiles="F:\\Iains Work Stuff\\testing\\Selenium\\Grid";
+    public static String fireBugNumericVersion="2.0.16";
     public static void outputText(String text) {
         System.out.println(text);
     }
@@ -144,12 +145,12 @@ public class HelperClasses {
         String s = File.separator;
         //TODO detect if firebug is installed, and only install if not
         String extensionPath = System.getProperty("user.dir") +
-                String.format("%ssrc%stest%sresources%s%s",s,s,s,s,"firebug-2.0.13-fx.xpi");
+                String.format("%ssrc%stest%sresources%s%s",s,s,s,s,"firebug-" + fireBugNumericVersion + "-fx.xpi");
         System.out.println("Using FireBug from "+ extensionPath);
         FirefoxProfile profile = new FirefoxProfile(); //create new profile
         profile.setEnableNativeEvents(true); //set setEnableNativeEvents to true
         //stop firebug showing the first run screen by setting the last version
-        profile.setPreference("extensions.firebug.currentVersion", "2.0.13");
+        profile.setPreference("extensions.firebug.currentVersion", fireBugNumericVersion);
         //if
         //profile.setPreference("general.useragent.override", "some UA string");
         //enable all firebug pages including NET
