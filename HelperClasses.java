@@ -36,7 +36,9 @@ public class HelperClasses {
     public static String pathToResourcesTools="\\src\\test\\resources\\tools";
     public static String pathToSeleniumGridServerNodeBatchFiles="F:\\Iains Work Stuff\\testing\\Selenium\\Grid";
     public static String fireBugNumericVersion="2.0.16";
-    static JavascriptExecutor js =(JavascriptExecutor)aDriver;
+    public static JavascriptExecutor js;
+
+
     public static void outputText(String text) {
         System.out.println(text);
     }
@@ -358,12 +360,13 @@ public class HelperClasses {
                 return theServerURLReturned;
     }
     public static void CheckBoxNotTickedSoUseJavaScriptToTickIt(WebElement checkbox) {
+        js = (JavascriptExecutor) aDriver;
         System.out.println("CheckBoxNotTickedSoUseJavaScriptToTickIt");
         js.executeScript("function toggle(checked) {" +
-                "var element = document.getElementById('"+checkbox.getAttribute("id")+"');"+
-                "if (checked != element.checked) {"+
-                "element.click();"+
-                "}}"+
+                "var element = document.getElementById('" + checkbox.getAttribute("id") + "');" +
+                "if (checked != element.checked) {" +
+                "element.click();" +
+                "}}" +
                 "toggle();");
     }
     public static void testThatCheckBoxIsTickedIfNotForceUsingJavaScript(WebElement checkbox) {
