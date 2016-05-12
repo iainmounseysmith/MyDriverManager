@@ -20,6 +20,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static com.selenium.environment.MyDriverManager.aDriver;
 import static com.selenium.redirect_tests.testRedirectionViaFoundListofUserAgentStrings.*;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -35,6 +36,7 @@ public class HelperClasses {
     public static String pathToResourcesTools="\\src\\test\\resources\\tools";
     public static String pathToSeleniumGridServerNodeBatchFiles="F:\\Iains Work Stuff\\testing\\Selenium\\Grid";
     public static String fireBugNumericVersion="2.0.16";
+    static JavascriptExecutor js =(JavascriptExecutor)aDriver;
     public static void outputText(String text) {
         System.out.println(text);
     }
@@ -354,6 +356,24 @@ public class HelperClasses {
                 break;
         }
                 return theServerURLReturned;
+    }
+    public static void CheckBoxNotTickedSoUseJavaScriptToTickIt(WebElement checkbox) {
+        System.out.println("CheckBoxNotTickedSoUseJavaScriptToTickIt");
+        js.executeScript("function toggle(checked) {" +
+                "var element = document.getElementById('"+checkbox.getAttribute("id")+"');"+
+                "if (checked != element.checked) {"+
+                "element.click();"+
+                "}}"+
+                "toggle();");
+    }
+    public static void testThatCheckBoxIsTickedIfNotForceUsingJavaScript(WebElement checkbox) {
+        if (checkbox.isSelected()==false)
+        { //System.out.println("Checkbox is NOT selected");
+            CheckBoxNotTickedSoUseJavaScriptToTickIt(checkbox);
+        }else{
+            System.out.println("testThatCheckBoxIsTickedIfNotForceUsingJavaScript-Checkbox IS selected");
+            //add assert here to echk selected
+        }
     }
 
 }
