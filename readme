@@ -1,0 +1,60 @@
+MyDriverManager
+
+Inspired by the evil tester - this is my webdriver driver manager.
+
+==========
+Set Method
+---
+Use the Set method to set browser name if NOT running from mvn commandline or IDE run configuration
+
+/*this is now where you set browser name if NOT running from mvn commandline or IDE run configuration
+           first parameter (driverOrBrowserName) is the local driver you want to run, if running local only then second and third parameter should be omitted
+           driverOrBrowserName can be passed on its own e.g.  set(driverOrBrowserName.FIREFOX);
+           second parameter is the remote host name (grid or saucelabs) that you want to run on grid2
+           the third parameter is the browser you want to run on the remote host*/
+
+Usage types
+1
+		   //use set for non-local-  examples below
+		   //set(driverOrBrowserName.REMOTEWEB,remoteHostName.GRID,driverOrBrowserName.FIREFOX);
+		   //in the wxample of grid you must have other supporting files in place e.g selenium standalone server, json files, startup batch files
+		   //set(driverOrBrowserName.REMOTEWEB,remoteHostName.SAUCELABS,driverOrBrowserName.FIREFOX);
+		   parameters
+		   driverOrBrowserName driverChoice - here we choose the driver to use...or remoteweb
+		   remoteHostName remoteHost - here we choose the remote hostname ie for grid,saucelabs
+		   driverOrBrowserName remoteBrowser - here we choose the driver to use on the remote host
+2
+		   //use set to setup for a driver hosted on your local machine - ie NOT remote (grid,suacelabs etc)
+		   set(driverOrBrowserName.GOOGLECHROME);
+
+
+
+==========
+Get Method
+---
+Get() looks for a series of system properties with which to set
+-my_driver(system property ), driverFoundAsProperty
+-remote_host_name(system property ),remoteHostNameFoundAsProperty
+-remote_browser_name(system property ),remoteHostBrowserNameFoundAsProperty
+
+A switch statement on driverFoundAsProperty creates, customises and returns a WebDriver called aDriver.
+
+get(String goToThisURL )
+runs get() and attempts to maximise the window and returns a WebDriver called aDriver.
+
+Note that if you do NOT use GET then you will NOT get an instance of WebDriver returned ie aDriver....unless you do that locally.
+The get method is great if you want to set and get in the setup method (@BeforeClass)
+
+//enter url as below - the get method will return aDriver
+        get("http://www.compendiumdev.co.uk/selenium/basic_ajax.html");
+
+There are 2 ways of using Get
+1
+get("http://useragentstring.com/pages/Mobile%20Browserlist/");
+aDriver is returned from MyDriverManager, so you're not initialising aDriver in your class, so access aDriver using "MyDriverManager.aDriver."
+
+2
+aDriver=get("http://useragentstring.com/pages/Mobile%20Browserlist/");
+aDriver is initiallsed in your class so access aDriver using "aDriver.whateveryouwanttodo".
+
+
