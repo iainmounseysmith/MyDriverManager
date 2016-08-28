@@ -6,6 +6,7 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static com.selenium.environment.HelperClasses.*;
@@ -30,7 +31,7 @@ public class MyDriverManager {
     private static driverOrBrowserName remoteBrowserName;
     public enum driverOrBrowserName {FIREFOX, GOOGLECHROME, REMOTEWEB, IE, HTMLUNIT, GRID,PHANTOM};
     public enum remoteHostName{GRID,SAUCELABS};
-
+public static WebDriverWait wait;
     //the set method is used to set browser type via code rather then Run Configuration/CI/Maven, we're setting system properties that get method can use
     //Method signature for a remotely hosted driver
     public static void set(driverOrBrowserName driverChoice,remoteHostName remoteHost,driverOrBrowserName remoteBrowser) {
@@ -167,6 +168,7 @@ public class MyDriverManager {
         try{
             System.out.println("Maximising window using get method...");
             aDriver.manage().window().maximize();
+
         }catch(UnsupportedCommandException e){
             System.out.println("Remote Driver does not support maximise");
         }
