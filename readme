@@ -1,6 +1,7 @@
 MyDriverManager
 
 Inspired by the evil tester - this is my webdriver driver manager.
+The idea here is to abstract away the complexity of driver management, allowing selection of local, remote or CI selected driver.
 
 ==========
 Set Method
