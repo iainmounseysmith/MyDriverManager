@@ -13,7 +13,7 @@ import static com.selenium.environment.HelperClasses.*;
 
 /**'
  * Created by Iain Mounsey-Smith on 24/11/2015.
- * Production versionnn
+ * Production versionn
  */
 public class MyDriverManager {
     public static WebDriver aDriver = null;//create variable Adriver of type Webdriver...must be static as accessed in beforeclass..//create as public so can access from other classes
@@ -29,7 +29,7 @@ public class MyDriverManager {
     public static driverOrBrowserName useThisDriver = null;
     public static String theBrowserYouAreRunningIs = "";
     private static driverOrBrowserName remoteBrowserName;
-    public enum driverOrBrowserName {FIREFOX, GOOGLECHROME, REMOTEWEB, IE, HTMLUNIT, GRID,PHANTOM};
+    public enum driverOrBrowserName {FIREFOX, GOOGLECHROME, REMOTEWEB, IE, HTMLUNIT, GRID,PHANTOM,GECKO};
     public enum remoteHostName{GRID,SAUCELABS};
 public static WebDriverWait wait;
     //the set method is used to set browser type via code rather then Run Configuration/CI/Maven, we're setting system properties that get method can use
@@ -120,6 +120,10 @@ public static WebDriverWait wait;
                     System.out.println("This system property has been passed through - MY_DRIVER=PHANTOM ");
                     useThisDriver = driverOrBrowserName.PHANTOM;
                     break;
+                case "GECKO":
+                    System.out.println("This system property has been passed through - MY_DRIVER=GECKO ");
+                    useThisDriver = driverOrBrowserName.GECKO;
+                    break;
                 default:
                     System.out.println("No driver specified so using default driver - FIREFOX");
                     useThisDriver = driverOrBrowserName.FIREFOX;
@@ -158,6 +162,11 @@ public static WebDriverWait wait;
                     //System.out.println("The set method takes us straight to the RemoteWeb");
                     customiseRemoteWeb();
                     break;
+                case "GECKO":
+                    //https://code.google.com/p/selenium/wiki/Grid2
+                    //System.out.println("The set method takes us straight to the GECKO-Marionette");
+                    customiseGecko();
+                    break;
             }
                    }
         return  aDriver;//we return the requested aDriver - instantiated with correct driver
@@ -191,6 +200,9 @@ public static WebDriverWait wait;
                 case "PHANTOM":
                     theBrowserYouAreRunningIs = driverOrBrowserName.PHANTOM.name();
                     break;
+                case "GECKO":
+                    theBrowserYouAreRunningIs = driverOrBrowserName.GECKO.name();
+                    break;
             }
         }else{//else if driver is other then remotedriver/grid THEN report browser launched
             //System.out.println("inside else bit");
@@ -206,6 +218,9 @@ public static WebDriverWait wait;
                     break;
                 case "PHANTOM":
                     theBrowserYouAreRunningIs = driverOrBrowserName.PHANTOM.name();
+                    break;
+                case "GECKO":
+                    theBrowserYouAreRunningIs = driverOrBrowserName.GECKO.name();
                     break;
             }
         }
