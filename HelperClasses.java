@@ -8,6 +8,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.MarionetteDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -231,7 +232,7 @@ public class HelperClasses {
         File myPhantomJSExe = new File(FullPathToExecutableInResources);
         if (myPhantomJSExe.exists() == true) {
         }
-        else{fail("A PhantomJSExe.exe cannot be found.\n. Download it from \n http://phantomjs.org/download.html /n and place it in "+ FullPathToExecutableInResources+ "\\phantom\\");
+        else{fail("A PhantomJSExe.exe cannot be found.\n. Download it from \n http://phantomjs.org/download.html /n and place it in " + FullPathToExecutableInResources + "\\phantom\\");
         }
         System.setProperty("webdriver.ie.phantom", FullPathToExecutableInResources); //set location
        // String[] cli_args = new String[]{ "--proxy-type=none" };//added to fix 263 erros...didn't work
@@ -246,8 +247,49 @@ public class HelperClasses {
             capabilities.setCapability("phantomjs.page.settings.userAgent", useThisUserAgent2);
         }
         MyDriverManager.aDriver = new PhantomJSDriver(capabilities);
-        return MyDriverManager.aDriver;
+       return MyDriverManager.aDriver;
         //create another method with alternate signature - accepts arguments specifying UA string....run customisePhantom()
+    }
+
+    @Test
+    public static WebDriver customiseGecko(){
+        /*
+        Marionette driver .09 works with selenium 2.x NOT 3.x.
+        Marionette driver .10 works with selenium 3.x
+         */
+        String currentDir = System.getProperty("user.dir");
+        String wiresExecutable = "wires.exe";
+        String marionetteDriverLocation = currentDir + "\\src\\test\\resources\\tools\\GeckoDriver\\";
+
+        File myWiresExe = new File(marionetteDriverLocation+ wiresExecutable);
+        if (myWiresExe.exists() == true) {
+            System.setProperty("webdriver.gecko.driver", marionetteDriverLocation + wiresExecutable);
+        }
+        else{fail("Wires.exe cannot be found.\nDownload it from \n https://github.com/mozilla/geckodriver/releases \n and place it in " + marionetteDriverLocation );
+        }
+
+        //When I wrote this(Aug2016) gecko needed to know where the firefox executable is
+        String fireFoxExecutable = "firefox.exe";
+        String fireFoxExecutableLocation = "C:\\Program Files (x86)\\Mozilla Firefox\\";
+        File myFireFoxExe = new File(fireFoxExecutableLocation + fireFoxExecutable);
+        if (myFireFoxExe.exists() == true) {
+            System.setProperty("webdriver.firefox.bin", fireFoxExecutableLocation + fireFoxExecutable);
+        }
+        else{fail("FireFox.exe cannot be found.\nSearch for firefox.exe on your c drive \nand set string fireFoxExecutableLocation to that location");
+        }
+
+        FirefoxProfile firefoxProfile = new FirefoxProfile();
+        firefoxProfile.setPreference("browser.startup.homepage;about:home","about:blank");
+        //firefoxProfile.setPreference("startup.homepage_welcome_url","about:home");
+        firefoxProfile.setPreference("browser.startup.homepage","https://github.com/iainmounseysmith/MyDriverManager");
+        //firefoxProfile.setPreference("general.useragent.override", "Any UserAgent String");
+        // firefoxProfile.setPreference("browser.usedOnWindows10.introURL","about:blank");
+        //firefoxProfile.setPreference("devtools.devedition.promo.url","");
+        //firefoxProfile.setPreference("xpinstall.signatures.required",false);
+        DesiredCapabilities desiredCapabilities = DesiredCapabilities.firefox();
+        desiredCapabilities.setCapability(FirefoxDriver.PROFILE, firefoxProfile);
+        MyDriverManager.aDriver = new MarionetteDriver(desiredCapabilities);
+        return MyDriverManager.aDriver;
     }
 
     @Test
@@ -358,25 +400,6 @@ public class HelperClasses {
                 break;
         }
                 return theServerURLReturned;
-    }
-    public static void CheckBoxNotTickedSoUseJavaScriptToTickIt(WebElement checkbox) {
-        js = (JavascriptExecutor) aDriver;
-        System.out.println("CheckBoxNotTickedSoUseJavaScriptToTickIt");
-        js.executeScript("function toggle(checked) {" +
-                "var element = document.getElementById('" + checkbox.getAttribute("id") + "');" +
-                "if (checked != element.checked) {" +
-                "element.click();" +
-                "}}" +
-                "toggle();");
-    }
-    public static void testThatCheckBoxIsTickedIfNotForceUsingJavaScript(WebElement checkbox) {
-        if (checkbox.isSelected()==false)
-        { //System.out.println("Checkbox is NOT selected");
-            CheckBoxNotTickedSoUseJavaScriptToTickIt(checkbox);
-        }else{
-            System.out.println("testThatCheckBoxIsTickedIfNotForceUsingJavaScript-Checkbox IS selected");
-            //add assert here to echk selected
-        }
     }
 
 }
