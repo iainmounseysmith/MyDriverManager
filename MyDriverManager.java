@@ -9,6 +9,8 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.net.MalformedURLException;
+
 import static com.selenium.environment.HelperClasses.*;
 
 /**'
@@ -29,10 +31,10 @@ public class MyDriverManager {
     public static driverOrBrowserName useThisDriver = null;
     public static String theBrowserYouAreRunningIs = "";
     private static driverOrBrowserName remoteBrowserName;
-    public enum driverOrBrowserName {FIREFOX, GOOGLECHROME, REMOTEWEB, IE, HTMLUNIT, GRID,PHANTOM,GECKO};
+    public enum driverOrBrowserName {FIREFOX, GOOGLECHROME, REMOTEWEB, IE, HTMLUNIT, GRID,PHANTOM,GECKO,EDGE};
     public enum remoteHostName{GRID,SAUCELABS};
 public static WebDriverWait wait;
-    //the set method is used to set browser type via code rather then Run Configuration/CI/Maven, we're setting system properties that get method can use
+    //the set method is used to set local browser name,remote host (if used) or remote browsername(if used) via CODE rather then Run Configuration/CI/Maven, we're setting system properties that get method can use
     //Method signature for a remotely hosted driver
     public static void set(driverOrBrowserName driverChoice,remoteHostName remoteHost,driverOrBrowserName remoteBrowser) {
         System.out.println("The Set method has been passed parameters...");
@@ -49,9 +51,9 @@ public static WebDriverWait wait;
         System.setProperty(REMOTE_HOST_NAME, remoteHostServerName.name());
         System.setProperty(REMOTE_BROWSER_NAME, remoteBrowserName.name());
 
-        System.out.println("useThisDriver has been passed through from code as \t\t\t\t" + useThisDriver + "\t\t\tand set as system property MY_DRIVER");
-        System.out.println("remoteHostServerName has been passed through from code as \t\t" + remoteHostServerName+ "\t\t\t\tand set as system property REMOTE_HOST_NAME");
-        System.out.println("remoteBrowserName has been passed through from code as \t\t\t" + remoteBrowserName+ "\t\t\t\tand set as system property REMOTE_BROWSER_NAME");
+        System.out.println("The set method has passed through useThisDriver as \t\t\t\t" + useThisDriver + "\t\t\tand set as system property MY_DRIVER");
+        System.out.println("The set method has passed through remoteHostServerName as \t\t" + remoteHostServerName+ "\t\t\t\tand set as system property REMOTE_HOST_NAME");
+        System.out.println("The set method has passed through remoteBrowserName as \t\t\t" + remoteBrowserName+ "\t\tand set as system property REMOTE_BROWSER_NAME");
 
         //e.g. mvn test -DMY_DRIVER=GRID -DGRID_BROWSER=GOOGLECHROME
         if (remoteHostServerName !=null) {//this handles instances where we pass null in to set() method for gridBrowser
@@ -70,7 +72,7 @@ public static WebDriverWait wait;
     //Method signature for using a local driver only
     public static void set(driverOrBrowserName driverChoice){
         useThisDriver = driverChoice;//local browser;// set this to null if only running local
-        System.out.println("useThisDriver has been passed through from code as \t\t\t\t" + useThisDriver + "\t\t\tand set as system property MY_DRIVER");
+        System.out.println("The set method has passed through \t\t\t\t" + useThisDriver + "\t\t\tand set as system property MY_DRIVER");
         String browserNameAsString = useThisDriver.name();
         System.setProperty(MY_DRIVER, browserNameAsString);
         if (aDriver != null) {//if a driver is already loaded then quit it
@@ -78,20 +80,20 @@ public static WebDriverWait wait;
             aDriver = null;
         }
     }
-    //the get method assumes that MY_DRIVER is set via set method system properties,  or Run Configuration, or maven commandline or IDE run configuration...
-    public static WebDriver get() {
-        if (useThisDriver == null) { //if we haven't had a browser name passed thru from set method...so must be from maven commandline/IDE run configuration
+    //usethisdriver is set in ther SET method
+    public static WebDriver get()  {
+        if (useThisDriver == null) { //if we haven't had a browser name passed thru from set method ie usethisdriver is NULL ...so must be from maven commandline/IDE run configuration
             System.out.println("Set method not run - straight into the get method");
             if (System.getProperties().containsKey(MY_DRIVER)) {//then we look for property key "mydriver"(might be set via maven switch)
-                //System.out.println("MY_DRIVER property value is: " + System.getProperty(MY_DRIVER));
+                System.out.println("Maven or Run Configuration has passed through this system property - MY_DRIVER \t\t\t\t" + System.getProperty(MY_DRIVER));
                 driverFoundAsProperty = System.getProperty(MY_DRIVER);//set driverFoundAsProperty as found property
             }
             if (System.getProperties().containsKey(REMOTE_HOST_NAME)) {//then we look for property key "mydriver"(might be set via maven switch)
-                //System.out.println("Maven or Run Configuration has passed through this system property - REMOTE_HOST_NAME= " + System.getProperty(REMOTE_HOST_NAME));
+                System.out.println("Maven or Run Configuration has passed through this system property - REMOTE_HOST_NAME \t\t" + System.getProperty(REMOTE_HOST_NAME));
                 remoteHostNameFoundAsProperty = System.getProperty(REMOTE_HOST_NAME);//set driverFoundAsProperty as found property
             }
             if (System.getProperties().containsKey(REMOTE_BROWSER_NAME)) {//then we look for property key "mydriver"(might be set via maven switch)
-                //System.out.println("REMOTE_BROWSER_NAME property value is: " + System.getProperty(REMOTE_BROWSER_NAME));
+                System.out.println("Maven or Run Configuration has passed through this system property - REMOTE_BROWSER_NAME  \t" + System.getProperty(REMOTE_BROWSER_NAME));
                 remoteHostBrowserNameFoundAsProperty = System.getProperty(REMOTE_BROWSER_NAME);//set driverFoundAsProperty as found property
             }
 
@@ -101,36 +103,44 @@ public static WebDriverWait wait;
                     useThisDriver = driverOrBrowserName.FIREFOX;
                     break;
                 case "GOOGLECHROME":
-                    System.out.println("This system property has been passed through - MY_DRIVER=GOOGLECHROME ");
+                    //System.out.println("GET:This system property has been passed through - MY_DRIVER=GOOGLECHROME ");
                     useThisDriver = driverOrBrowserName.GOOGLECHROME;
                     break;
                 case "IE":
-                    System.out.println("This system property has been passed through - MY_DRIVER=IE");
+                    //System.out.println("GET:This system property has been passed through - MY_DRIVER=IE");
                     useThisDriver = driverOrBrowserName.IE;
                     break;
                 case "REMOTEWEB":
-                    System.out.println("This system property has been passed through - MY_DRIVER=REMOTEWEB");
-                    useThisDriver = driverOrBrowserName.REMOTEWEB;
+                    //System.out.println("GET:This system property has been passed through - MY_DRIVER=REMOTEWEB");
+                    //we now exit and customer the remote browser - capabilities etc etc
+                    useThisDriver = driverOrBrowserName.REMOTEWEB; //presently only getcurrentbrowser uses this reference - consider fixing getcurrrentbrowser
+                    customiseRemoteWeb();
                     break;
                 case "HTMLUNIT":
-                    System.out.println("This system property has been passed through - MY_DRIVER=HTMLUNIT");
+                    //System.out.println("GET:This system property has been passed through - MY_DRIVER=HTMLUNIT");
                     useThisDriver = driverOrBrowserName.HTMLUNIT;
                     break;
                 case "PHANTOM":
-                    System.out.println("This system property has been passed through - MY_DRIVER=PHANTOM ");
+                    //System.out.println("GET:This system property has been passed through - MY_DRIVER=PHANTOM ");
                     useThisDriver = driverOrBrowserName.PHANTOM;
                     break;
                 case "GECKO":
-                    System.out.println("This system property has been passed through - MY_DRIVER=GECKO ");
+                    //System.out.println("GET:This system property has been passed through - MY_DRIVER=GECKO ");
                     useThisDriver = driverOrBrowserName.GECKO;
+                    break;
+                case "EDGE":
+                    //System.out.println("GET:This system property has been passed through - MY_DRIVER=EDGE ");
+                    useThisDriver = driverOrBrowserName.EDGE;
+                    System.out.println("usethisdriver = " + useThisDriver);
                     break;
                 default:
                     System.out.println("No driver specified so using default driver - FIREFOX");
                     useThisDriver = driverOrBrowserName.FIREFOX;
             }
         }
-        if (aDriver == null) {//if we haven't set aDriver
-            switch (useThisDriver.name()) {
+        //if we haven't yet set aDriver to a driverOrBrowserName via set method - we're therefore expecting to get driverOrBrowserName via run configuration or CI
+        if (aDriver == null) {
+                switch (useThisDriver.name()) {
                 case "FIREFOX":
                     //http://www.seleniumhq.org/docs/03_webdriver.jsp#firefox-driver
                     //System.out.println("The set method takes us straight to the FIREFOX browser");
@@ -167,11 +177,14 @@ public static WebDriverWait wait;
                     //System.out.println("The set method takes us straight to the GECKO-Marionette");
                     customiseGecko();
                     break;
+                case "EDGE":
+                    customiseEDGE();
+                    break;
             }
                    }
         return  aDriver;//we return the requested aDriver - instantiated with correct driver
     }
-    public static WebDriver get(String goToThisURL ){
+    public static WebDriver get(String goToThisURL )  {
         get();//we run the get method to set useThisDriver and instantiate aDriver based on (useThisDriver.name())
         aDriver.get(goToThisURL);
         try{
@@ -203,6 +216,9 @@ public static WebDriverWait wait;
                 case "GECKO":
                     theBrowserYouAreRunningIs = driverOrBrowserName.GECKO.name();
                     break;
+                case "EDGE":
+                    theBrowserYouAreRunningIs = driverOrBrowserName.EDGE.name();
+                    break;
             }
         }else{//else if driver is other then remotedriver/grid THEN report browser launched
             //System.out.println("inside else bit");
@@ -221,6 +237,9 @@ public static WebDriverWait wait;
                     break;
                 case "GECKO":
                     theBrowserYouAreRunningIs = driverOrBrowserName.GECKO.name();
+                    break;
+                case "EDGE":
+                    theBrowserYouAreRunningIs = driverOrBrowserName.EDGE.name();
                     break;
             }
         }
