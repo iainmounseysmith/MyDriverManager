@@ -41,7 +41,7 @@ Get() looks for a series of system properties with which to set
 A switch statement on driverFoundAsProperty creates, customises and returns a WebDriver called aDriver.
 
 get(String goToThisURL )
-runs get() and attempts to maximise the window and returns a WebDriver called aDriver.
+runs get()- which returns a driver - and goes to a url
 
 Note that if you do NOT use GET then you will NOT get an instance of WebDriver returned ie aDriver....unless you do that locally.
 The get method is great if you want to set and get in the setup method (@BeforeClass)
