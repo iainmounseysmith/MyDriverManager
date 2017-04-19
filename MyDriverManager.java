@@ -6,10 +6,7 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.net.MalformedURLException;
 
 import static com.selenium.environment.HelperClasses.*;
 
@@ -31,7 +28,7 @@ public class MyDriverManager {
     public static driverOrBrowserName useThisDriver = null;
     public static String theBrowserYouAreRunningIs = "";
     private static driverOrBrowserName remoteBrowserName;
-    public enum driverOrBrowserName {FIREFOX, GOOGLECHROME, REMOTEWEB, IE, HTMLUNIT, GRID,PHANTOM,GECKO,EDGE};
+    public enum driverOrBrowserName {FIREFOX, GOOGLECHROME, REMOTEWEB, IE, HTMLUNIT, GRID,PHANTOM,MARIONETTE,EDGE};
     public enum remoteHostName{GRID,SAUCELABS};
 public static WebDriverWait wait;
     //the set method is used to set local browser name,remote host (if used) or remote browsername(if used) via CODE rather then Run Configuration/CI/Maven, we're setting system properties that get method can use
@@ -124,9 +121,9 @@ public static WebDriverWait wait;
                     //System.out.println("GET:This system property has been passed through - MY_DRIVER=PHANTOM ");
                     useThisDriver = driverOrBrowserName.PHANTOM;
                     break;
-                case "GECKO":
-                    //System.out.println("GET:This system property has been passed through - MY_DRIVER=GECKO ");
-                    useThisDriver = driverOrBrowserName.GECKO;
+                case "MARIONETTE":
+                    //System.out.println("GET:This system property has been passed through - MY_DRIVER=MARIONETTE ");
+                    useThisDriver = driverOrBrowserName.MARIONETTE;
                     break;
                 case "EDGE":
                     //System.out.println("GET:This system property has been passed through - MY_DRIVER=EDGE ");
@@ -172,10 +169,10 @@ public static WebDriverWait wait;
                     //System.out.println("The set method takes us straight to the RemoteWeb");
                     customiseRemoteWeb();
                     break;
-                case "GECKO":
+                case "MARIONETTE":
                     //https://code.google.com/p/selenium/wiki/Grid2
                     //System.out.println("The set method takes us straight to the GECKO-Marionette");
-                    customiseGecko();
+                    customiseMarionette();
                     break;
                 case "EDGE":
                     customiseEDGE();
@@ -189,7 +186,7 @@ public static WebDriverWait wait;
         aDriver.get(goToThisURL);
         try{
             System.out.println("Maximising window using get method...");
-            aDriver.manage().window().maximize();
+            //aDriver.manage().window().maximize();//this isn't working now...10/04/17
 
         }catch(UnsupportedCommandException e){
             System.out.println("Remote Driver does not support maximise");
@@ -213,8 +210,8 @@ public static WebDriverWait wait;
                 case "PHANTOM":
                     theBrowserYouAreRunningIs = driverOrBrowserName.PHANTOM.name();
                     break;
-                case "GECKO":
-                    theBrowserYouAreRunningIs = driverOrBrowserName.GECKO.name();
+                case "MARIONETTE":
+                    theBrowserYouAreRunningIs = driverOrBrowserName.MARIONETTE.name();
                     break;
                 case "EDGE":
                     theBrowserYouAreRunningIs = driverOrBrowserName.EDGE.name();
@@ -235,8 +232,8 @@ public static WebDriverWait wait;
                 case "PHANTOM":
                     theBrowserYouAreRunningIs = driverOrBrowserName.PHANTOM.name();
                     break;
-                case "GECKO":
-                    theBrowserYouAreRunningIs = driverOrBrowserName.GECKO.name();
+                case "MARIONETTE":
+                    theBrowserYouAreRunningIs = driverOrBrowserName.MARIONETTE.name();
                     break;
                 case "EDGE":
                     theBrowserYouAreRunningIs = driverOrBrowserName.EDGE.name();
@@ -250,6 +247,7 @@ public static WebDriverWait wait;
         //the following sourced from stackexchange
         final JavascriptExecutor js = (JavascriptExecutor)aDriver;
         // wait for jQuery to load
+        System.out.println("Executing waitForJStoLoad - waiting for jquery to be active and document.readyState to be complete...complete");
         ExpectedCondition<Boolean> jQueryLoad = new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver aDriver) {
