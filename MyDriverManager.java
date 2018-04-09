@@ -8,6 +8,8 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.IOException;
+
 import static com.selenium.environment.HelperClasses.*;
 
 /**'
@@ -28,8 +30,8 @@ public class MyDriverManager {
     public static driverOrBrowserName useThisDriver = null;
     public static String theBrowserYouAreRunningIs = "";
     private static driverOrBrowserName remoteBrowserName;
-    public enum driverOrBrowserName {FIREFOX, GOOGLECHROME, REMOTEWEB, IE, HTMLUNIT, GRID,PHANTOM,MARIONETTE,EDGE};
-    public enum remoteHostName{GRID,SAUCELABS};
+    public enum driverOrBrowserName {FIREFOX, GOOGLECHROME, REMOTEWEB, IE, HTMLUNIT, GRID,PHANTOM,MARIONETTE,EDGE, ANDROIDCHROME, ANDROIDBROWSER};
+    public enum remoteHostName{GRID,SAUCELABS,APPIUM_LOCAL};
 public static WebDriverWait wait;
     //the set method is used to set local browser name,remote host (if used) or remote browsername(if used) via CODE rather then Run Configuration/CI/Maven, we're setting system properties that get method can use
     //Method signature for a remotely hosted driver
@@ -69,7 +71,7 @@ public static WebDriverWait wait;
     //Method signature for using a local driver only
     public static void set(driverOrBrowserName driverChoice){
         useThisDriver = driverChoice;//local browser;// set this to null if only running local
-        System.out.println("The set method has passed through \t\t\t\t" + useThisDriver + "\t\t\tand set as system property MY_DRIVER");
+        System.out.println("The set method has ONLY passed through \t\t\t\t" + useThisDriver + "\t\t\tand set as system property MY_DRIVER");
         String browserNameAsString = useThisDriver.name();
         System.setProperty(MY_DRIVER, browserNameAsString);
         if (aDriver != null) {//if a driver is already loaded then quit it
@@ -77,7 +79,7 @@ public static WebDriverWait wait;
             aDriver = null;
         }
     }
-    //usethisdriver is set in ther SET method
+    //usethisdriver is set in the SET method
     public static WebDriver get()  {
         if (useThisDriver == null) { //if we haven't had a browser name passed thru from set method ie usethisdriver is NULL ...so must be from maven commandline/IDE run configuration
             System.out.println("Set method not run - straight into the get method");
@@ -111,7 +113,11 @@ public static WebDriverWait wait;
                     //System.out.println("GET:This system property has been passed through - MY_DRIVER=REMOTEWEB");
                     //we now exit and customer the remote browser - capabilities etc etc
                     useThisDriver = driverOrBrowserName.REMOTEWEB; //presently only getcurrentbrowser uses this reference - consider fixing getcurrrentbrowser
-                    customiseRemoteWeb();
+                    try {
+                        customiseRemoteWeb();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "HTMLUNIT":
                     //System.out.println("GET:This system property has been passed through - MY_DRIVER=HTMLUNIT");
@@ -167,7 +173,11 @@ public static WebDriverWait wait;
                 case "REMOTEWEB":
                     //https://code.google.com/p/selenium/wiki/Grid2
                     //System.out.println("The set method takes us straight to the RemoteWeb");
-                    customiseRemoteWeb();
+                    try {
+                        customiseRemoteWeb();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "MARIONETTE":
                     //https://code.google.com/p/selenium/wiki/Grid2
